@@ -7,7 +7,7 @@
     "build": "yarn codegen && npx polywrap build -c ./buildConfig.ts",
     "codegen": "npx polywrap codegen -c ./buildConfig.ts",
     "deploy": "yarn deploy:contract && yarn deploy:polywrap",
-    "deploy:polywrap": "npx polywrap deploy",
+    "deploy:polywrap": "npx polywrap deploy -o ./deployment.json",
     "deploy:contract": "node ./scripts/deploy-contracts.js",
     "test": "yarn test:e2e",
     "test:e2e": "jest --passWithNoTests --runInBand --verbose"
