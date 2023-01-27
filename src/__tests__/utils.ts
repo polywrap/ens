@@ -7,6 +7,8 @@ import { providers as testEnvProviders } from "@polywrap/test-env-js";
 
 const wrappers = {
   ethereum: "wrap://ipfs/QmdEMfomFW1XqoxcsCEnhujn9ebQezUXw8pmwLtecyR6F6",
+  uts46: "wrap://ipfs/QmPL9Njg3rGkpoJyoy8pZ5fTavjvHxNuuuiGRApzyGESZB",
+  sha3: "wrap://ipfs/QmThRxFfr7Hj9Mq6WmcGXjkRrgqMG3oD93SLX27tinQWy5"
 };
 
 export function getConfig(
@@ -53,6 +55,14 @@ export function getConfig(
       {
         from: "wrap://ens/ethereum.polywrap.eth",
         to: wrappers.ethereum,
+      },
+      {
+        from: "wrap://ens/wrappers.polywrap.eth:uts46-lite@1.0.0",
+        to: wrappers.uts46,
+      },
+      {
+        from:"wrap://ens/wrappers.polywrap.eth:sha3@1.0.0",
+        to: wrappers.sha3,
       },
     ]
   ).addEnvs(

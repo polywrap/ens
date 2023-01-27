@@ -1,6 +1,6 @@
 #import { Module, Connection } into Ethereum from "wrap://ens/ethereum.polywrap.eth"
-#import { Module } into UTS46 from "wrap://ens/uts46.polywrap.eth"
-#import { Module } into SHA3 from "wrap://ens/sha3.polywrap.eth"
+#import { Module } into UTS46 from "wrap://ens/wrappers.polywrap.eth:uts46-lite@1.0.0"
+#import { Module } into SHA3 from "wrap://ens/wrappers.polywrap.eth:sha3@1.0.0"
 
 type Module {
   getResolver(
