@@ -1,7 +1,13 @@
 import { Connection, Connections, ethereumProviderPlugin } from "ethereum-provider-js";
+import { ipfsPlugin } from "@polywrap/ipfs-plugin-js";
+import { ipfsResolverPlugin } from "@polywrap/ipfs-resolver-plugin-js";
 import { ensResolverPlugin } from "@polywrap/ens-resolver-plugin-js";
 import { ClientConfigBuilder } from "@polywrap/client-js";
 import { providers as testEnvProviders } from "@polywrap/test-env-js";
+
+const wrappers = {
+  ethereum: "wrap://ipfs/QmPV4sG9zaVVv686Z9bXDFcysUEFfQwME5ayneWQTabNUe",
+};
 
 export function getConfig(
   ethereum: string,
@@ -29,12 +35,27 @@ export function getConfig(
           package: ethereumProviderPlugin({ connections }),
         },
         {
+          uri: "ens/ipfs-resolver.polywrap.eth",
+          package: ipfsResolverPlugin({}),
+        },
+        {
+          uri: "ens/ipfs.polywrap.eth",
+          package: ipfsPlugin({}),
+        },
+        {
           uri: "ens/ens-resolver.polywrap.eth",
           package: ensResolverPlugin({ addresses: { testnet: ensAddress } }),
         },
       ]
     )
-  .addEnvs(
+    .addRedirects(
+    [
+      {
+        from: "wrap://ens/ethereum.polywrap.eth",
+        to: wrappers.ethereum,
+      },
+    ]
+  ).addEnvs(
     [{
       uri: "ens/ipfs.polywrap.eth",
       env: {
