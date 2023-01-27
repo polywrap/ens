@@ -4,8 +4,8 @@
   "private": true,
   "version": "0.4.0",
   "scripts": {
-    "build": "yarn codegen && npx polywrap build c ./buildConfig.ts",
-    "codegen": "npx polywrap codegen -c ./buildConfig.ts",
+    "build": "npx polywrap build --codegen",
+    "codegen": "npx polywrap codegen",
     "deploy": "npx polywrap deploy -o ./deployment.json",
     "deploy:contract": "node ./scripts/deploy-contracts.js",
     "test": "yarn test:e2e",
