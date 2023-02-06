@@ -325,7 +325,6 @@ export function registerDomainAndSubdomainsRecursively(
         result.tx = registerDomain({
           domain: subdomains[i],
           registrarAddress: args.registrarAddress,
-          registryAddress: args.registryAddress,
           owner: args.owner,
           connection: args.connection,
           txOptions: args.txOptions
@@ -461,14 +460,12 @@ export function reverseRegisterDomain(
     options: parseTxOptions(args.txOptions),
   });
 
-  const setNameTx = setName({
+  return setName({
     reverseRegistryAddress: args.reverseRegistryAddress,
     domain: args.domain,
     connection: args.connection,
     txOptions: args.txOptions,
   });
-
-  return setNameTx;
 }
 
 export function setAddress(args: Args_setAddress): Ethereum_TxResponse {
@@ -592,7 +589,6 @@ export function configureOpenDomain(
 
   const registerOpenDomainTxReceipt = registerDomain({
     registrarAddress: args.registrarAddress,
-    registryAddress: args.registryAddress,
     domain: args.tld,
     owner: args.owner,
     connection: args.connection,

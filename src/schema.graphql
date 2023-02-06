@@ -87,7 +87,6 @@ type Module {
   registerDomain(
     domain: String!
     registrarAddress: String!
-    registryAddress: String!
     owner: String!
     connection: Ethereum_Connection
     txOptions: TxOptions
