@@ -76,8 +76,7 @@ describe("ENS Wrapper", () => {
       args: {
         domain: customTld,
         owner,
-        registryAddress,
-        registrarAddress: registrarAddress,
+        registrarAddress,
         connection: {
           networkNameOrChainId: network
         }
