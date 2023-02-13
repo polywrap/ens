@@ -1241,17 +1241,6 @@
     graphql "15.5.0"
     graphql-tag "2.10.4"
 
-"@polywrap/core-js@0.10.0-pre.6":
-  version "0.10.0-pre.6"
-  resolved "https://registry.yarnpkg.com/@polywrap/core-js/-/core-js-0.10.0-pre.6.tgz#7751267b8472473bf3774d441fd75ebe348685e3"
-  integrity sha512-JP9qk0gS1r1fyRqe2Wp/3tzyDEn3DqeVSC+53aBNEk8uMLIJSUI184JXusVNVafwbLgMxOcJ6vZlhb0x5orrWQ==
-  dependencies:
-    "@polywrap/result" "0.10.0-pre.6"
-    "@polywrap/tracing-js" "0.10.0-pre.6"
-    "@polywrap/wrap-manifest-types-js" "0.10.0-pre.6"
-    graphql "15.5.0"
-    graphql-tag "2.10.4"
-
 "@polywrap/core-js@0.10.0-pre.7":
   version "0.10.0-pre.7"
   resolved "https://registry.yarnpkg.com/@polywrap/core-js/-/core-js-0.10.0-pre.7.tgz#525aca1d6569e2eaca33ca15668a77dd270c8293"
@@ -1432,11 +1421,6 @@
   resolved "https://registry.yarnpkg.com/@polywrap/result/-/result-0.10.0-pre.5.tgz#b703878cf7426dee0edc1a2649f79a06153b403e"
   integrity sha512-5ATKBdqSS/qmSfJDrQBBq4d34b3Al381bJWJ8nWlcyt8ybo2CqHwQuv/dD02elmhS2G3EK/p/sZCbD1st8CZYw==
 
-"@polywrap/result@0.10.0-pre.6":
-  version "0.10.0-pre.6"
-  resolved "https://registry.yarnpkg.com/@polywrap/result/-/result-0.10.0-pre.6.tgz#ec5fbe2f8a828bd586c67d9243b4a46e8f42e423"
-  integrity sha512-IQeaS/4Wdbl+TI59J0+WOpRUQWY7F85QwfRLEH2hZnbMKaCuJB1ski9/0D4soEDiTGF5+PY9rQCB/nNrj5rYJg==
-
 "@polywrap/result@0.10.0-pre.7":
   version "0.10.0-pre.7"
   resolved "https://registry.yarnpkg.com/@polywrap/result/-/result-0.10.0-pre.7.tgz#0805b8c78f505eb4ade9c79c638f559b89ce7750"
@@ -1486,18 +1470,6 @@
   version "0.10.0-pre.5"
   resolved "https://registry.yarnpkg.com/@polywrap/tracing-js/-/tracing-js-0.10.0-pre.5.tgz#3408c469c64a1f4e6f059f40d04c6b6e6328e76f"
   integrity sha512-7sUl3K1rCuCxr6LJ2mucf4KcvUgpNbyhiv7Q68BOFEzFgJCpai6IGi4domgYvz/MPsanqVhkMwdf5D1iuK6PwQ==
-  dependencies:
-    "@fetsorn/opentelemetry-console-exporter" "0.0.3"
-    "@opentelemetry/api" "1.2.0"
-    "@opentelemetry/exporter-trace-otlp-http" "0.32.0"
-    "@opentelemetry/resources" "1.6.0"
-    "@opentelemetry/sdk-trace-base" "1.6.0"
-    "@opentelemetry/sdk-trace-web" "1.6.0"
-
-"@polywrap/tracing-js@0.10.0-pre.6":
-  version "0.10.0-pre.6"
-  resolved "https://registry.yarnpkg.com/@polywrap/tracing-js/-/tracing-js-0.10.0-pre.6.tgz#ef1b8640d4c0a7a0a1f347931ae8b4f7494d287d"
-  integrity sha512-2IxLGRn3VdkMyq/aSo9H97oC6D+5+/JEp6mxvo4SxFROnt/0Ua9vs/8VhxBkIKPUglYFCug91T/CWTN0BhzvSw==
   dependencies:
     "@fetsorn/opentelemetry-console-exporter" "0.0.3"
     "@opentelemetry/api" "1.2.0"
@@ -1564,15 +1536,6 @@
   version "0.10.0-pre.5"
   resolved "https://registry.yarnpkg.com/@polywrap/wrap-manifest-types-js/-/wrap-manifest-types-js-0.10.0-pre.5.tgz#bf37741becd9856458400f4f972f8c4a4fc1ac5e"
   integrity sha512-7IbPpt76PXjhBkd8SPJARw4P9bpekb44YdrnsKXTeT5d8JQ5OgY4syiMVsmTraMdmHJxkJTZ/raqSZHLAxWLiw==
-  dependencies:
-    json-schema-ref-parser "9.0.9"
-    jsonschema "1.4.0"
-    semver "7.3.5"
-
-"@polywrap/wrap-manifest-types-js@0.10.0-pre.6":
-  version "0.10.0-pre.6"
-  resolved "https://registry.yarnpkg.com/@polywrap/wrap-manifest-types-js/-/wrap-manifest-types-js-0.10.0-pre.6.tgz#1171be90c00ab5fe687f5b9bd1c7b32bb79e5d00"
-  integrity sha512-70Q+rCnB807m3au+pfP+/MimHacg7Wz2gMS5Q34GA5NGt5Qj0vdyqBjIYbIsyerMjO/gxHrf4CxKl+0+elX0fQ==
   dependencies:
     json-schema-ref-parser "9.0.9"
     jsonschema "1.4.0"
@@ -2582,14 +2545,14 @@ esutils@^2.0.2:
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.3.tgz#74d2eb4de0b8da1293711910d50775b9b710ef64"
   integrity sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==
 
-ethereum-provider-js@0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/ethereum-provider-js/-/ethereum-provider-js-0.1.3.tgz#a5fe8966a6dca42442b3802bc291a98d9d3ca723"
-  integrity sha512-7Ne7DBMCJf2JpuamqNh/4a0mQJYTQgyfgH2BMqJ/LsRCjh1zjZCAuEiLkBIafOmmh6rA4X8vDY11rgkml2GC/g==
+ethereum-provider-js@0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/ethereum-provider-js/-/ethereum-provider-js-0.1.4.tgz#c372a011005dfd854dab97f7b8774d542917b2ec"
+  integrity sha512-TxABRi+Dp+ZBTHdLj5btGc7xwWNBTxJrRxp+0fK5ovUBfgnuCyMQuUOT48JNJybhALqiU9iZUPN1g0/MXhnQEg==
   dependencies:
     "@ethersproject/address" "5.7.0"
     "@ethersproject/providers" "5.7.0"
-    "@polywrap/core-js" "0.10.0-pre.6"
+    "@polywrap/core-js" "0.10.0-pre.7"
     ethers "5.7.0"
 
 ethers@5.0.7:
