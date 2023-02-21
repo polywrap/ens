@@ -6,7 +6,7 @@
         "name": "ipfs_deploy",
         "id": "ipfs_deploy.ipfs_deploy",
         "input": "wrap://fs/./build",
-        "result": "wrap://ipfs/QmbnuJYrp3rG7QPv9rK73x7NCjY8rUANC9D9BuEq6DQwHF"
+        "result": "wrap://ipfs/QmWG8NJnvGMCosxaUWuRna33MSDR331rByGTdy4EDsVjNL"
       }
     ]
   }
