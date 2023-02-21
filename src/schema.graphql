@@ -1,4 +1,4 @@
-#import { Module, Connection } into Ethereum from "wrap://ipfs/QmU9HjvLSJNXewQCjhPPTKzWxWhavsRUv1C1J92GR7uw15"
+#import { Module, Connection } into Ethereum from "wrap://ipfs/QmUotBZsoDm56oRjho4oz7bDptEjZP4tgzSHnGv2tASYQe"
 #import { Module } into UTS46 from "wrap://ipfs/QmPL9Njg3rGkpoJyoy8pZ5fTavjvHxNuuuiGRApzyGESZB"
 #import { Module } into SHA3 from "wrap://ipfs/QmThRxFfr7Hj9Mq6WmcGXjkRrgqMG3oD93SLX27tinQWy5"
 

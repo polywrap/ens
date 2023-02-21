@@ -53,7 +53,7 @@ export function getConfig(
       },
     }]
   ).addInterfaceImplementations(
-    "wrap://ens/wraps.eth:ethereum-provider@1.0.0",
+    "wrap://ens/wraps.eth:ethereum-provider@1.1.0",
       ["wrap://plugin/ethereum-provider"]
   ).buildCoreConfig()
 }
