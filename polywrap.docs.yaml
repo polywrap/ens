@@ -1,0 +1,7 @@
+format: 0.1.0
+title: ENS wrap
+pages:
+  home:
+    path: docs/home.md
+    title: Home
+homePage: home

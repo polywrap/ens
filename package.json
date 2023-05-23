@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npx polywrap build --codegen",
     "codegen": "npx polywrap codegen",
+    "docs": "npx polywrap docs init",
     "deploy": "npx polywrap deploy -o ./deployment.json",
     "deploy:contract": "node ./scripts/deploy-contracts.js",
     "test": "yarn test:e2e",
