@@ -1,10 +1,9 @@
-
 import { PolywrapClient } from "@polywrap/client-js";
 import path from "path";
-import { providers } from "ethers";
+import { Wallet, providers } from "ethers";
 
-import { getConfig } from "./utils";
-import { initInfra, stopInfra } from "./infra";
+import { getClientConfig, initInfra, stopInfra } from "./utils";
+import { ETH_ENS_IPFS_MODULE_CONSTANTS } from "polywrap";
 
 jest.setTimeout(900000);
 
@@ -16,14 +15,18 @@ describe("ENS Wrapper", () => {
 
   let fsUri: string;
   let ethersProvider: providers.JsonRpcProvider;
-  let registryAddress: string;
-  let registrarAddress: string;
-  let resolverAddress: string;
-  let reverseRegistryAddress: string;
+  let registryAddress: string =
+    ETH_ENS_IPFS_MODULE_CONSTANTS.ensAddresses.ensAddress;
+  let registrarAddress: string =
+    ETH_ENS_IPFS_MODULE_CONSTANTS.ensAddresses.registrarAddress;
+  let resolverAddress: string =
+    ETH_ENS_IPFS_MODULE_CONSTANTS.ensAddresses.resolverAddress.toLowerCase();
+  let reverseRegistryAddress: string =
+    ETH_ENS_IPFS_MODULE_CONSTANTS.ensAddresses.reverseAddress;
   let customFifsRegistrarAddress: string;
 
-  let owner: string;
-  let anotherOwner: string;
+  let owner: string = "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1";
+  let anotherOwner: string = "0xffcf8fdee72ac11b5c542428b35eef5769c409f0";
 
   const customTld: string = "doe.eth";
   const openSubdomain: string = "open." + customTld;
@@ -34,32 +37,33 @@ describe("ENS Wrapper", () => {
   beforeAll(async () => {
     await initInfra();
 
-    // get ens wrapepr uri
+    // get ens wrap uri
     const apiPath: string = path.resolve(__dirname + "/../../");
     fsUri = `fs/${apiPath}/build`;
 
     // set up ethers provider
     ethersProvider = providers.getDefaultProvider(
-      testEnvProviders.ethereum
+      ETH_ENS_IPFS_MODULE_CONSTANTS.ethereumProvider
     ) as providers.JsonRpcProvider;
-    owner = (await ethersProvider.getSigner(0).getAddress()).toLowerCase();
-    anotherOwner = (await ethersProvider.getSigner(1).getAddress()).toLowerCase();
-    registryAddress = ensAddresses.ensAddress;
-    registrarAddress = ensAddresses.registrarAddress;
-    resolverAddress = ensAddresses.resolverAddress.toLowerCase();
-    reverseRegistryAddress = ensAddresses.reverseAddress;
 
     // get client
-    const config = getConfig(testEnvProviders.ethereum, ensAddresses.ensAddress, testEnvProviders.ipfs);
-    ownerClient = new PolywrapClient(config, { noDefaults: true });
-
-    const anotherOwnerConfig = getConfig(
-      testEnvProviders.ethereum,
-      ensAddresses.ensAddress,
-      testEnvProviders.ipfs,
-      anotherOwner
+    ownerClient = new PolywrapClient(
+      getClientConfig(
+        new Wallet(
+          "0x4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d",
+          ethersProvider
+        )
+      )
     );
-    anotherOwnerClient = new PolywrapClient(anotherOwnerConfig, { noDefaults: true });
+
+    anotherOwnerClient = new PolywrapClient(
+      getClientConfig(
+        new Wallet(
+          "0x6cbed15c793ce57650b9877cf6fa156fbef513c4e6134f022a85b1ffdd59b2a1",
+          ethersProvider
+        )
+      )
+    );
   });
 
   afterAll(async () => {
@@ -75,9 +79,9 @@ describe("ENS Wrapper", () => {
         owner,
         registrarAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (result.ok === false) throw result.error;
@@ -87,16 +91,16 @@ describe("ENS Wrapper", () => {
   it("should set and get resolver", async () => {
     const setResult = await ownerClient.invoke({
       uri: fsUri,
-      method: "setResolver", 
+      method: "setResolver",
       args: {
         domain: customTld,
         owner,
         registryAddress,
         resolverAddress: resolverAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (setResult.ok === false) throw setResult.error;
@@ -109,9 +113,9 @@ describe("ENS Wrapper", () => {
         domain: customTld,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (getResult.ok === false) throw getResult.error;
@@ -129,9 +133,9 @@ describe("ENS Wrapper", () => {
         owner,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (setResult.ok === false) throw setResult.error;
@@ -144,9 +148,9 @@ describe("ENS Wrapper", () => {
         domain: subdomain,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (getResult.ok === false) throw getResult.error;
@@ -156,35 +160,38 @@ describe("ENS Wrapper", () => {
   it("should register domain with subdomains recursively and fetch it", async () => {
     const domain = "foo.bar.baz.mydomain.eth";
 
-    const registerDomainAndSubdomainsRecursivelyResult = await ownerClient.invoke<any[]>({
-      uri: fsUri,
-      method: "registerDomainAndSubdomainsRecursively",
-      args: {
-        domain,
-        owner,
-        registryAddress,
-        resolverAddress,
-        registrarAddress,
-        ttl: '0',
-        connection: {
-          networkNameOrChainId: network
-        }
-      }
-    });
+    const registerDomainAndSubdomainsRecursivelyResult =
+      await ownerClient.invoke<any[]>({
+        uri: fsUri,
+        method: "registerDomainAndSubdomainsRecursively",
+        args: {
+          domain,
+          owner,
+          registryAddress,
+          resolverAddress,
+          registrarAddress,
+          ttl: "0",
+          connection: {
+            networkNameOrChainId: network,
+          },
+        },
+      });
 
-    if (registerDomainAndSubdomainsRecursivelyResult.ok === false) throw registerDomainAndSubdomainsRecursivelyResult.error;
+    if (registerDomainAndSubdomainsRecursivelyResult.ok === false)
+      throw registerDomainAndSubdomainsRecursivelyResult.error;
     expect(registerDomainAndSubdomainsRecursivelyResult.value).toBeDefined();
-    
-    const resultingRegistrations = registerDomainAndSubdomainsRecursivelyResult.value;
 
-    expect(resultingRegistrations[0]?.name).toBe("mydomain.eth")
-    expect(resultingRegistrations[0]?.didRegister).toBe(true)
-    expect(resultingRegistrations[1]?.name).toBe("baz.mydomain.eth")
-    expect(resultingRegistrations[1]?.didRegister).toBe(true)
-    expect(resultingRegistrations[2]?.name).toBe("bar.baz.mydomain.eth")
-    expect(resultingRegistrations[2]?.didRegister).toBe(true)
-    expect(resultingRegistrations[3]?.name).toBe("foo.bar.baz.mydomain.eth")
-    expect(resultingRegistrations[3]?.didRegister).toBe(true)
+    const resultingRegistrations =
+      registerDomainAndSubdomainsRecursivelyResult.value;
+
+    expect(resultingRegistrations[0]?.name).toBe("mydomain.eth");
+    expect(resultingRegistrations[0]?.didRegister).toBe(true);
+    expect(resultingRegistrations[1]?.name).toBe("baz.mydomain.eth");
+    expect(resultingRegistrations[1]?.didRegister).toBe(true);
+    expect(resultingRegistrations[2]?.name).toBe("bar.baz.mydomain.eth");
+    expect(resultingRegistrations[2]?.didRegister).toBe(true);
+    expect(resultingRegistrations[3]?.name).toBe("foo.bar.baz.mydomain.eth");
+    expect(resultingRegistrations[3]?.didRegister).toBe(true);
 
     const getOwnerResult = await ownerClient.invoke({
       uri: fsUri,
@@ -193,9 +200,9 @@ describe("ENS Wrapper", () => {
         domain,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (getOwnerResult.ok === false) throw getOwnerResult.error;
@@ -205,7 +212,7 @@ describe("ENS Wrapper", () => {
     // No subdomain
 
     const domainWithNoSubdomain = "sumtin.eth";
-  
+
     const domainWithNoSubdomainResult = await ownerClient.invoke<any[]>({
       uri: fsUri,
       method: "registerDomainAndSubdomainsRecursively",
@@ -215,25 +222,27 @@ describe("ENS Wrapper", () => {
         registryAddress,
         resolverAddress,
         registrarAddress,
-        ttl: '0',
+        ttl: "0",
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
-    if (domainWithNoSubdomainResult.ok === false) throw domainWithNoSubdomainResult.error;
+    if (domainWithNoSubdomainResult.ok === false)
+      throw domainWithNoSubdomainResult.error;
     expect(domainWithNoSubdomainResult.value).toBeDefined();
-    
-    const domainWithNoSubdomainRegistrations = domainWithNoSubdomainResult.value;
 
-    expect(domainWithNoSubdomainRegistrations[0]?.name).toBe("sumtin.eth")
+    const domainWithNoSubdomainRegistrations =
+      domainWithNoSubdomainResult.value;
+
+    expect(domainWithNoSubdomainRegistrations[0]?.name).toBe("sumtin.eth");
   });
 
   it("should not attempt to re-register registered subdomains/domains when recursively registering", async () => {
-    const rootDomain = "domain.eth"
-    const label = "sub"
-    const tld = `${label}.${rootDomain}`
+    const rootDomain = "domain.eth";
+    const label = "sub";
+    const tld = `${label}.${rootDomain}`;
     const subdomain = `already.registered.${tld}`;
 
     await ownerClient.invoke<string>({
@@ -245,9 +254,9 @@ describe("ENS Wrapper", () => {
         registryAddress,
         registrarAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     await ownerClient.invoke<string>({
@@ -259,9 +268,9 @@ describe("ENS Wrapper", () => {
         registryAddress,
         registrarAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     await ownerClient.invoke({
@@ -273,42 +282,47 @@ describe("ENS Wrapper", () => {
         owner,
         registryAddress,
         resolverAddress,
-        ttl: '0',
+        ttl: "0",
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
-    const registerDomainAndSubdomainsRecursivelyResult = await ownerClient.invoke<any[]>({
-      uri: fsUri,
-      method: "registerDomainAndSubdomainsRecursively",
-      args: {
-        domain: subdomain,
-        owner,
-        registryAddress,
-        resolverAddress,
-        registrarAddress,
-        ttl: '0',
-        connection: {
-          networkNameOrChainId: network
-        }
-      }
-    });
+    const registerDomainAndSubdomainsRecursivelyResult =
+      await ownerClient.invoke<any[]>({
+        uri: fsUri,
+        method: "registerDomainAndSubdomainsRecursively",
+        args: {
+          domain: subdomain,
+          owner,
+          registryAddress,
+          resolverAddress,
+          registrarAddress,
+          ttl: "0",
+          connection: {
+            networkNameOrChainId: network,
+          },
+        },
+      });
 
-    if (registerDomainAndSubdomainsRecursivelyResult.ok === false) throw registerDomainAndSubdomainsRecursivelyResult.error;
+    if (registerDomainAndSubdomainsRecursivelyResult.ok === false)
+      throw registerDomainAndSubdomainsRecursivelyResult.error;
     expect(registerDomainAndSubdomainsRecursivelyResult.value).toBeDefined();
 
-    const resultingRegistrations = registerDomainAndSubdomainsRecursivelyResult.value;
+    const resultingRegistrations =
+      registerDomainAndSubdomainsRecursivelyResult.value;
 
-    expect(resultingRegistrations[0]?.name).toBe("domain.eth")
-    expect(resultingRegistrations[0]?.didRegister).toBe(false)
-    expect(resultingRegistrations[1]?.name).toBe("sub.domain.eth")
-    expect(resultingRegistrations[1]?.didRegister).toBe(false)
-    expect(resultingRegistrations[2]?.name).toBe("registered.sub.domain.eth")
-    expect(resultingRegistrations[2]?.didRegister).toBe(true)
-    expect(resultingRegistrations[3]?.name).toBe("already.registered.sub.domain.eth")
-    expect(resultingRegistrations[3]?.didRegister).toBe(true)
+    expect(resultingRegistrations[0]?.name).toBe("domain.eth");
+    expect(resultingRegistrations[0]?.didRegister).toBe(false);
+    expect(resultingRegistrations[1]?.name).toBe("sub.domain.eth");
+    expect(resultingRegistrations[1]?.didRegister).toBe(false);
+    expect(resultingRegistrations[2]?.name).toBe("registered.sub.domain.eth");
+    expect(resultingRegistrations[2]?.didRegister).toBe(true);
+    expect(resultingRegistrations[3]?.name).toBe(
+      "already.registered.sub.domain.eth"
+    );
+    expect(resultingRegistrations[3]?.didRegister).toBe(true);
 
     const getOwnerResult = await ownerClient.invoke({
       uri: fsUri,
@@ -317,8 +331,8 @@ describe("ENS Wrapper", () => {
         domain: subdomain,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
+          networkNameOrChainId: network,
+        },
       },
     });
 
@@ -340,38 +354,41 @@ describe("ENS Wrapper", () => {
         registrarAddress,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
-    const registerSubdomainsRecursivelyResult = await ownerClient.invoke<any[]>({
-      uri: fsUri,
-      method: "registerSubdomainsRecursively",
-      args: {
-        domain: subdomain,
-        owner,
-        registryAddress,
-        resolverAddress,
-        registrarAddress,
-        ttl: '0',
-        connection: {
-          networkNameOrChainId: network
-        }
+    const registerSubdomainsRecursivelyResult = await ownerClient.invoke<any[]>(
+      {
+        uri: fsUri,
+        method: "registerSubdomainsRecursively",
+        args: {
+          domain: subdomain,
+          owner,
+          registryAddress,
+          resolverAddress,
+          registrarAddress,
+          ttl: "0",
+          connection: {
+            networkNameOrChainId: network,
+          },
+        },
       }
-    });
+    );
 
-    if (registerSubdomainsRecursivelyResult.ok === false) throw registerSubdomainsRecursivelyResult.error;
+    if (registerSubdomainsRecursivelyResult.ok === false)
+      throw registerSubdomainsRecursivelyResult.error;
     expect(registerSubdomainsRecursivelyResult.value).toBeDefined();
-    
+
     const resultingRegistrations = registerSubdomainsRecursivelyResult.value;
 
-    expect(resultingRegistrations[0]?.name).toBe("ccc.basedomain.eth")
-    expect(resultingRegistrations[0]?.didRegister).toBe(true)
-    expect(resultingRegistrations[1]?.name).toBe("bbb.ccc.basedomain.eth")
-    expect(resultingRegistrations[1]?.didRegister).toBe(true)
-    expect(resultingRegistrations[2]?.name).toBe("aaa.bbb.ccc.basedomain.eth")
-    expect(resultingRegistrations[2]?.didRegister).toBe(true)
+    expect(resultingRegistrations[0]?.name).toBe("ccc.basedomain.eth");
+    expect(resultingRegistrations[0]?.didRegister).toBe(true);
+    expect(resultingRegistrations[1]?.name).toBe("bbb.ccc.basedomain.eth");
+    expect(resultingRegistrations[1]?.didRegister).toBe(true);
+    expect(resultingRegistrations[2]?.name).toBe("aaa.bbb.ccc.basedomain.eth");
+    expect(resultingRegistrations[2]?.didRegister).toBe(true);
 
     const getOwnerResult = await ownerClient.invoke({
       uri: fsUri,
@@ -380,9 +397,9 @@ describe("ENS Wrapper", () => {
         domain: subdomain,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (getOwnerResult.ok === false) throw getOwnerResult.error;
@@ -400,14 +417,15 @@ describe("ENS Wrapper", () => {
         owner: anotherOwner,
         registryAddress,
         resolverAddress,
-        ttl: '0',
+        ttl: "0",
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
-    if (setSubdomainRecordResult.ok === false) throw setSubdomainRecordResult.error;
+    if (setSubdomainRecordResult.ok === false)
+      throw setSubdomainRecordResult.error;
     expect(setSubdomainRecordResult.value).toBeDefined();
 
     const getOwnerResult = await ownerClient.invoke({
@@ -417,9 +435,9 @@ describe("ENS Wrapper", () => {
         domain: customSubdomain,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (getOwnerResult.ok === false) throw getOwnerResult.error;
@@ -434,9 +452,9 @@ describe("ENS Wrapper", () => {
         domain: customSubdomain,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (getOldOwnerResult.ok === false) throw getOldOwnerResult.error;
@@ -450,9 +468,9 @@ describe("ENS Wrapper", () => {
         newOwner: owner,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (setOwnerResult.ok === false) throw setOwnerResult.error;
@@ -465,9 +483,9 @@ describe("ENS Wrapper", () => {
         domain: customSubdomain,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (getNewOwnerResult.ok === false) throw getNewOwnerResult.error;
@@ -475,7 +493,8 @@ describe("ENS Wrapper", () => {
   });
 
   it("should set content hash and fetch it", async () => {
-    const cid = "0x64EC88CA00B268E5BA1A35678A1B5316D212F4F366B2477232534A8AECA37F3C".toLowerCase();
+    const cid =
+      "0x64EC88CA00B268E5BA1A35678A1B5316D212F4F366B2477232534A8AECA37F3C".toLowerCase();
 
     const setContentHashResult = await ownerClient.invoke({
       uri: fsUri,
@@ -485,23 +504,23 @@ describe("ENS Wrapper", () => {
         cid,
         resolverAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (setContentHashResult.ok === false) throw setContentHashResult.error;
     expect(setContentHashResult.value).toBeDefined();
 
-    const getContentHashResult  = await ownerClient.invoke({
+    const getContentHashResult = await ownerClient.invoke({
       uri: fsUri,
       method: "getContentHash",
       args: {
         domain: customSubdomain,
         resolverAddress,
         connection: {
-          networkNameOrChainId: network
-        }
+          networkNameOrChainId: network,
+        },
       },
     });
 
@@ -515,12 +534,13 @@ describe("ENS Wrapper", () => {
         domain: customSubdomain,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
-    if (getContentHashFromDomainResult.ok === false) throw getContentHashFromDomainResult.error;
+    if (getContentHashFromDomainResult.ok === false)
+      throw getContentHashFromDomainResult.error;
     expect(getContentHashFromDomainResult.value).toEqual(cid);
   });
 
@@ -533,9 +553,9 @@ describe("ENS Wrapper", () => {
         address: anotherOwner,
         resolverAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (setAddressResult.ok === false) throw setAddressResult.error;
@@ -548,9 +568,9 @@ describe("ENS Wrapper", () => {
         domain: customTld,
         resolverAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (getAddressResult.ok === false) throw getAddressResult.error;
@@ -563,12 +583,13 @@ describe("ENS Wrapper", () => {
         domain: customTld,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
-    if (getAddressFromDomainResult.ok === false) throw getAddressFromDomainResult.error;
+    if (getAddressFromDomainResult.ok === false)
+      throw getAddressFromDomainResult.error;
     expect(getAddressFromDomainResult.value).toEqual(anotherOwner);
   });
 
@@ -581,9 +602,9 @@ describe("ENS Wrapper", () => {
         reverseRegistryAddress,
         owner,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (reverseRegistryResult.ok === false) throw reverseRegistryResult.error;
@@ -598,12 +619,13 @@ describe("ENS Wrapper", () => {
         address: owner,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
-    if (getNameFromAddressResult.ok === false) throw getNameFromAddressResult.error;
+    if (getNameFromAddressResult.ok === false)
+      throw getNameFromAddressResult.error;
     expect(getNameFromAddressResult.value).toEqual(customTld);
 
     const getNameFromReverseResolverResult = await ownerClient.invoke({
@@ -613,12 +635,13 @@ describe("ENS Wrapper", () => {
         address: owner,
         resolverAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
-    if (getNameFromReverseResolverResult.ok === false) throw getNameFromReverseResolverResult.error;
+    if (getNameFromReverseResolverResult.ok === false)
+      throw getNameFromReverseResolverResult.error;
     expect(getNameFromReverseResolverResult.value).toEqual(customTld);
   });
 
@@ -635,9 +658,9 @@ describe("ENS Wrapper", () => {
         key,
         value,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (setTextRecordResult.ok === false) throw setTextRecordResult.error;
@@ -651,9 +674,9 @@ describe("ENS Wrapper", () => {
         resolverAddress,
         key,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (getTextRecordResult.ok === false) throw getTextRecordResult.error;
@@ -662,9 +685,9 @@ describe("ENS Wrapper", () => {
 
   it("should configure open domain", async () => {
     const configureOpenDomainResult = await ownerClient.invoke<{
-        fifsRegistrarAddress: string;
-        setOwnerTxReceipt: any;
-      }>({
+      fifsRegistrarAddress: string;
+      setOwnerTxReceipt: any;
+    }>({
       uri: fsUri,
       method: "configureOpenDomain",
       args: {
@@ -674,12 +697,13 @@ describe("ENS Wrapper", () => {
         resolverAddress,
         registrarAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
-    if (configureOpenDomainResult.ok === false) throw configureOpenDomainResult.error;
+    if (configureOpenDomainResult.ok === false)
+      throw configureOpenDomainResult.error;
     expect(configureOpenDomainResult.value).toBeDefined();
 
     const getOwnerResult = await ownerClient.invoke({
@@ -689,15 +713,18 @@ describe("ENS Wrapper", () => {
         domain: openSubdomain,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (getOwnerResult.ok === false) throw getOwnerResult.error;
-    expect(getOwnerResult.value).toEqual( configureOpenDomainResult.value.fifsRegistrarAddress);
+    expect(getOwnerResult.value).toEqual(
+      configureOpenDomainResult.value.fifsRegistrarAddress
+    );
 
-    customFifsRegistrarAddress = configureOpenDomainResult.value.fifsRegistrarAddress;
+    customFifsRegistrarAddress =
+      configureOpenDomainResult.value.fifsRegistrarAddress;
   });
 
   it("should create subdomain in open domain", async () => {
@@ -712,9 +739,9 @@ describe("ENS Wrapper", () => {
         registryAddress,
         resolverAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (result.ok === false) throw result.error;
@@ -722,7 +749,8 @@ describe("ENS Wrapper", () => {
   });
 
   it("should create subdomain in open domain and set content hash", async () => {
-    const cid = "0x64EC88CA00B268E5BA1A35678A1B5316D212F4F366B2477232534A8AECA37F3C".toLowerCase();
+    const cid =
+      "0x64EC88CA00B268E5BA1A35678A1B5316D212F4F366B2477232534A8AECA37F3C".toLowerCase();
 
     const createAndSetResult = await anotherOwnerClient.invoke({
       uri: fsUri,
@@ -736,9 +764,9 @@ describe("ENS Wrapper", () => {
         registryAddress,
         resolverAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (createAndSetResult.ok === false) throw createAndSetResult.error;
@@ -751,9 +779,9 @@ describe("ENS Wrapper", () => {
         domain: "label2." + openSubdomain,
         registryAddress,
         connection: {
-          networkNameOrChainId: network
-        }
-      }
+          networkNameOrChainId: network,
+        },
+      },
     });
 
     if (getResult.ok === false) throw getResult.error;
