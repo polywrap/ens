@@ -26,7 +26,7 @@ export function getClientConfig(signer?: Wallet): CoreClientConfig {
       })
     );
   }
-  return config.build()
+  return config.build();
 }
 
 export async function initInfra(): Promise<void> {
