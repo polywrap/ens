@@ -4,7 +4,7 @@
   "private": true,
   "version": "0.4.0",
   "scripts": {
-    "build": "npx polywrap build --codegen",
+    "build": "npx polywrap build",
     "codegen": "npx polywrap codegen",
     "deploy": "npx polywrap deploy -o ./deployment.json",
     "deploy:contract": "node ./scripts/deploy-contracts.js",
@@ -12,17 +12,12 @@
     "test:e2e": "jest --passWithNoTests --runInBand --verbose"
   },
   "dependencies": {
-    "@polywrap/wasm-as": "0.10.0-pre.7"
+    "@polywrap/wasm-as": "0.10.1"
   },
   "devDependencies": {
     "@types/jest": "22.2.3",
-    "polywrap": "0.10.0-pre.7",
-    "ethereum-provider-js": "0.2.0",
-    "@polywrap/ens-resolver-plugin-js": "0.10.0-pre.7",
-    "@polywrap/ipfs-resolver-plugin-js": "0.10.0-pre.7",
-    "@polywrap/ipfs-plugin-js": "0.10.0-pre.7",
-    "@polywrap/test-env-js": "0.10.0-pre.7",
-    "@polywrap/client-config-builder-js": "0.10.0-pre.7",
+    "@polywrap/ethereum-provider-js": "0.3.1",
+    "polywrap": "0.10.1",
     "dotenv": "8.2.0",
     "ethers": "5.0.8",
     "axios": "0.27.2",

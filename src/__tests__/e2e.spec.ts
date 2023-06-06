@@ -1,7 +1,4 @@
-import {
-  providers as testEnvProviders,
-  ensAddresses,
-} from "@polywrap/test-env-js";
+
 import { PolywrapClient } from "@polywrap/client-js";
 import path from "path";
 import { providers } from "ethers";

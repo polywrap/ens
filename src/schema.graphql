@@ -1,135 +1,135 @@
-#import { Module, Connection } into Ethereum from "wrap://ipfs/QmS4Z679ZE8WwZSoYB8w9gDSERHAoWG1fX94oqdWpfpDq3"
-#import { Module } into UTS46 from "wrap://ipfs/QmPL9Njg3rGkpoJyoy8pZ5fTavjvHxNuuuiGRApzyGESZB"
-#import { Module } into SHA3 from "wrap://ipfs/QmThRxFfr7Hj9Mq6WmcGXjkRrgqMG3oD93SLX27tinQWy5"
+#import { Module, Connection } into Ethers from "wrap://ens/ethers.wraps.eth:0.1.0"
+#import { Module } into UTS46 from "wrap://ens/wraps.eth:uts46@1.0.0"
+#import { Module } into SHA3 from "wrap://ens/wraps.eth:sha3@1.0.0"
 
 type Module {
   getResolver(
     registryAddress: String!
     domain: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
   ): String!
 
   getOwner(
     domain: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
   ): String!
 
   checkIfRecordExists(
     domain: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
   ): Boolean!
 
   getAddress(
     domain: String!
     resolverAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
   ): String!
 
   getAddressFromDomain(
     domain: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
   ): String!
 
   getContentHash(
     domain: String!
     resolverAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
   ): String!
 
   getContentHashFromDomain(
     domain: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
   ): String!
 
   getExpiryTimes(
     domain: String!
     registrarAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
   ): String!
 
   getReverseResolver(
     address: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
   ): String!
 
   getNameFromReverseResolver(
     address: String!
     resolverAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
   ): String!
 
   getNameFromAddress(
     address: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
   ): String!
 
   getTextRecord(
     domain: String!
     resolverAddress: String!
     key: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
   ): String!
 
   setResolver(
     domain: String!
     resolverAddress: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
-  ): Ethereum_TxResponse!
+  ): Ethers_TxResponse!
 
   registerDomain(
     domain: String!
     registrarAddress: String!
     owner: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
-  ): Ethereum_TxResponse!
+  ): Ethers_TxResponse!
 
   reverseRegisterDomain(
     domain: String!
     reverseRegistryAddress: String!
     owner: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
-  ): Ethereum_TxResponse!
+  ): Ethers_TxResponse!
 
   setName(
     domain: String!
     reverseRegistryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
-  ): Ethereum_TxResponse!
+  ): Ethers_TxResponse!
 
   setAddress(
     domain: String!
     address: String!
     resolverAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
-  ): Ethereum_TxResponse!
+  ): Ethers_TxResponse!
 
   setOwner(
     domain: String!
     newOwner: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
-  ): Ethereum_TxResponse!
+  ): Ethers_TxResponse!
 
   setSubdomainOwner(
     subdomain: String!
     owner: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
-  ): Ethereum_TxResponse!
+  ): Ethers_TxResponse!
 
   setRecord(
     domain: String!
@@ -137,9 +137,9 @@ type Module {
     resolverAddress: String!
     ttl: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
-  ): Ethereum_TxResponse!
+  ): Ethers_TxResponse!
 
   setSubdomainRecord(
     domain: String!
@@ -148,9 +148,9 @@ type Module {
     resolverAddress: String!
     ttl: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
-  ): Ethereum_TxResponse!
+  ): Ethers_TxResponse!
 
   registerSubdomainsRecursively(
     domain: String!
@@ -158,7 +158,7 @@ type Module {
     resolverAddress: String!
     ttl: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
   ): [RegistrationResult!]!
 
@@ -169,7 +169,7 @@ type Module {
     ttl: String!
     registrarAddress: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
   ): [RegistrationResult!]!
 
@@ -177,30 +177,30 @@ type Module {
     domain: String!
     cid: String!
     resolverAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
-  ): Ethereum_TxResponse!
+  ): Ethers_TxResponse!
 
   setAddressFromDomain(
     domain: String!
     address: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
-  ): Ethereum_TxResponse!
+  ): Ethers_TxResponse!
 
   setContentHashFromDomain(
     domain: String!
     cid: String!
     registryAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
-  ): Ethereum_TxResponse!
+  ): Ethers_TxResponse!
 
   deployFIFSRegistrar(
     registryAddress: String!
     tld: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
   ): String!
 
@@ -208,18 +208,18 @@ type Module {
     label: String!
     owner: String!
     fifsRegistrarAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
-  ): Ethereum_TxResponse!
+  ): Ethers_TxResponse!
 
   setTextRecord(
     domain: String!
     resolverAddress: String!
     key: String!
     value: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
-  ): Ethereum_TxResponse!
+  ): Ethers_TxResponse!
 
   configureOpenDomain(
     tld: String!
@@ -227,7 +227,7 @@ type Module {
     registryAddress: String!
     resolverAddress: String!
     registrarAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
   ): ConfigureOpenDomainResponse!
 
@@ -238,7 +238,7 @@ type Module {
     fifsRegistrarAddress: String!
     registryAddress: String!
     resolverAddress: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
   ): CreateSubdomainInOpenDomainResponse!
 
@@ -250,30 +250,30 @@ type Module {
     registryAddress: String!
     resolverAddress: String!
     cid: String!
-    connection: Ethereum_Connection
+    connection: Ethers_Connection
     txOptions: TxOptions
   ): CreateSubdomainInOpenDomainAndSetContentHashResponse
 }
 
 type ConfigureOpenDomainResponse {
   fifsRegistrarAddress: String!
-  registerOpenDomainTxReceipt: Ethereum_TxResponse!
-  setSubdomainRecordTxReceipt: Ethereum_TxResponse!
+  registerOpenDomainTxReceipt: Ethers_TxResponse!
+  setSubdomainRecordTxReceipt: Ethers_TxResponse!
 }
 
 type CreateSubdomainInOpenDomainResponse {
-  registerSubdomainTxReceipt: Ethereum_TxResponse!
-  setResolverTxReceipt: Ethereum_TxResponse!
+  registerSubdomainTxReceipt: Ethers_TxResponse!
+  setResolverTxReceipt: Ethers_TxResponse!
 }
 
 type CreateSubdomainInOpenDomainAndSetContentHashResponse implements CreateSubdomainInOpenDomainResponse {
-  setContentHashReceiptTx: Ethereum_TxResponse!
+  setContentHashReceiptTx: Ethers_TxResponse!
 }
 
 type RegistrationResult {
   name: String!
   didRegister: Boolean!
-  tx: Ethereum_TxResponse
+  tx: Ethers_TxResponse
 }
 
 type TxOptions {

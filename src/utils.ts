@@ -1,4 +1,4 @@
-import { UTS46_Module, SHA3_Module, TxOptions, Ethereum_TxOptions } from "./wrap";
+import { UTS46_Module, SHA3_Module, TxOptions, Ethers_TxOptions } from "./wrap";
 
 export function namehash(inputName: string): string {
   let node = "";
@@ -6,14 +6,14 @@ export function namehash(inputName: string): string {
     node += "00";
   }
 
-  const name: string = normalize(inputName)
+  const name: string = normalize(inputName);
 
   if (name) {
-    const labels: string[] = name.split('.');
+    const labels: string[] = name.split(".");
 
-    for(let i = labels.length - 1; i >= 0; i--) {
-      let labelSha = SHA3_Module.keccak_256({ message: labels[i] }).unwrap()
-      node = SHA3_Module.hex_keccak_256({ message: node + labelSha }).unwrap()
+    for (let i = labels.length - 1; i >= 0; i--) {
+      let labelSha = SHA3_Module.keccak_256({ message: labels[i] }).unwrap();
+      node = SHA3_Module.hex_keccak_256({ message: node + labelSha }).unwrap();
     }
   }
 
@@ -21,16 +21,20 @@ export function namehash(inputName: string): string {
 }
 
 export function normalize(name: string): string {
-  return name ? UTS46_Module.toAscii({ 
-    value: name
-  }).unwrap() : name
+  return name
+    ? UTS46_Module.toAscii({
+        value: name,
+      }).unwrap()
+    : name;
 }
 
-export function keccak256 (value: string): string {
-  return "0x" + SHA3_Module.keccak_256({ message: value }).unwrap()
+export function keccak256(value: string): string {
+  return "0x" + SHA3_Module.keccak_256({ message: value }).unwrap();
 }
 
-export function parseTxOptions(txOptions: TxOptions | null): Ethereum_TxOptions | null {
+export function parseTxOptions(
+  txOptions: TxOptions | null
+): Ethers_TxOptions | null {
   if (txOptions === null) {
     return null;
   }
@@ -41,5 +45,5 @@ export function parseTxOptions(txOptions: TxOptions | null): Ethereum_TxOptions 
     maxFeePerGas: txOptions.maxFeePerGas,
     maxPriorityFeePerGas: txOptions.maxPriorityFeePerGas,
     nonce: txOptions.nonce,
-  }
+  };
 }

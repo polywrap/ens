@@ -1,13 +1,16 @@
 module.exports = {
-  collectCoverage: true,
-  preset: 'ts-jest',
-  testEnvironment: 'node',
+  collectCoverage: false,
+  preset: "ts-jest",
+  testEnvironment: "node",
   testMatch: ["**/__tests__/**/?(*.)+(spec|test).[jt]s?(x)"],
-  testPathIgnorePatterns: ["/.polywrap"],
+  modulePathIgnorePatterns: [
+    "./src/__tests__/utils",
+    "/.polywrap/"
+  ],
   globals: {
-    'ts-jest': {
-      tsconfig: "tsconfig.ts.json",
-      diagnostics: false
-    }
+    "ts-jest": {
+      tsconfig: "tsconfig.json",
+      diagnostics: false,
+    },
   }
 };
