@@ -1,17 +1,17 @@
-import { PolywrapClient } from "@polywrap/client-js";
-import { ipfsPlugin } from "@polywrap/ipfs-plugin-js";
-import { ethereumPlugin, EthereumProvider } from "@polywrap/ethereum-plugin-js";
-import { ensPlugin } from "@polywrap/ens-plugin-js";
-
-import { ethers, Wallet } from "ethers";
-import axios from "axios";
+import { PolywrapClient, ClientConfigBuilder } from "@polywrap/client-js";
+import { Wallet } from "ethers";
+import {
+  Connection,
+  Connections,
+  ethereumProviderPlugin,
+} from "@polywrap/ethereum-provider-js";
 import dotenv from "dotenv";
 dotenv.config();
 
 async function main() {
-  const uri = "ipfs/QmdAsjKDB8rJEdYc8nqCCXVMcCweDArau2oZ9qaF33KJZr";
+  const uri = `fs/${__dirname}/../../build`;
   const ensAddress = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
-  const network = "rinkeby";
+  const network = "goerli";
   const domain = "open.polywrap.eth";
   const privKey = process.env.ETH_PRIV_KEY as string;
 
@@ -19,101 +19,70 @@ async function main() {
     throw Error("ETH_PRIV_KEY env variable is missing");
   }
 
-  // Get the test ens address
-  const { data } = await axios.get("http://localhost:4040/ens");
-  const testnetEnsAddress = data.ensAddress as string;
-
-  const rinkebyProvider = ethers.getDefaultProvider("rinkeby");
-
-  const client = new PolywrapClient({
-    redirects: [
-      {
-        from: "w3://ens/ipfs.polywrap.eth",
-        to: ipfsPlugin({
-          provider: "http://localhost:5001",
-          fallbackProviders: ["https://ipfs.io"]
-        }),
-      },
-      {
-        from: "w3://ens/ens.polywrap.eth",
-        to: ensPlugin({
-          addresses: {
-            testnet: testnetEnsAddress
-          }
-        }),
-      },
-      {
-        from: "w3://ens/ethereum.polywrap.eth",
-        to: ethereumPlugin({
-          networks: {
-            rinkeby: {
-              provider: rinkebyProvider as EthereumProvider,
-              signer: new Wallet(privKey, rinkebyProvider)
-            },
-            testnet: {
-              provider: "http://localhost:8545"
-            }
-          }
-        }),
-      }
-    ]
-  })
+  const builder = new ClientConfigBuilder();
+  builder.addDefaults().addPackages({
+    "wrap://ens/wraps.eth:ethereum-provider@2.0.0": ethereumProviderPlugin({
+      connections: new Connections({
+        networks: {
+          [network]: new Connection({
+            provider:
+              "https://goerli.infura.io/v3/41fbecf847994df5a9652b1210effd8a",
+            signer: new Wallet(privKey),
+          }),
+        },
+        defaultNetwork: network,
+      }),
+    }),
+  });
+  const client = new PolywrapClient(builder.build());
 
   // Deploy a new instance of the FIFS registrar
-  const deployFifs = await client.query<{
-    deployFIFSRegistrar: string
-  }>({
+  const deployFifs = await client.invoke<string>({
     uri,
-    query: `mutation {
-      deployFIFSRegistrar(
-        registryAddress: "${ensAddress}"
-        tld: "${domain}"
-        connection: {
-          networkNameOrChainId: "${network}"
-        }
-      )
-    }`
+    method: "deployFIFSRegistrar",
+    args: {
+      registryAddress: ensAddress,
+      tld: domain,
+      connection: {
+        networkNameOrChainId: network,
+      },
+    },
   });
 
-  if (!deployFifs.errors) {
-    console.log("Deployed FIFSRegistrar!")
-    console.log(deployFifs.data?.deployFIFSRegistrar);
+  if (!deployFifs.ok) {
+    throw Error(`Failed to deploy FIFSRegistrar: ${deployFifs.error}`);
   } else {
-    throw Error(`Failed to deploy FIFSRegistrar: ${deployFifs.errors}`);
+    console.log("Deployed FIFSRegistrar!");
+    console.log(deployFifs.value);
   }
 
-  const fifsAddress = deployFifs.data?.deployFIFSRegistrar;
+  const fifsAddress = deployFifs.value;
 
   // Set the subdomain's owner to the FIFSRegistrar
-  const setOwner = await client.query<{
-    setOwner: string
-  }>({
+  const setOwner = await client.invoke<string>({
     uri,
-    query: `mutation {
-      setOwner(
-        domain: "${domain}"
-        newOwner: "${fifsAddress}"
-        registryAddress: "${ensAddress}"
-        connection: {
-          networkNameOrChainId: "${network}"
-        }
-      )
-    }`
+    method: "setOwner",
+    args: {
+      domain,
+      newOwner: fifsAddress,
+      registryAddress: ensAddress,
+      connection: {
+        networkNameOrChainId: network,
+      },
+    },
   });
 
-  if (!setOwner.errors) {
-    console.log("Set Owner Succeeded!")
-    console.log(setOwner.data?.setOwner);
+  if (!setOwner.ok) {
+    throw Error(`Failed to Set Owner: ${setOwner.error}`);
   } else {
-    throw Error(`Failed to Set Owner: ${setOwner.errors}`);
+    console.log("Set Owner Succeeded!");
+    console.log(setOwner.value);
   }
 }
 
 main()
-  .catch(e => {
+  .catch((e) => {
     console.error(e);
     process.exit(1);
   })
-  .finally(() =>
-    process.exit(0)
-  );
+  .finally(() => process.exit(0));

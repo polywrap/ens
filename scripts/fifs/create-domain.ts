@@ -1,19 +1,20 @@
-import { PolywrapClient } from "@polywrap/client-js";
-import { ipfsPlugin } from "@polywrap/ipfs-plugin-js";
-import { ethereumPlugin, EthereumProvider } from "@polywrap/ethereum-plugin-js";
-import { ensPlugin } from "@polywrap/ens-plugin-js";
-
-import { ethers, Wallet } from "ethers";
-import axios from "axios";
+import { PolywrapClient, ClientConfigBuilder } from "@polywrap/client-js";
+import { Wallet } from "ethers";
+import {
+  Connection,
+  Connections,
+  ethereumProviderPlugin,
+} from "@polywrap/ethereum-provider-js";
 import dotenv from "dotenv";
 dotenv.config();
 
 async function main() {
-  const uri = "ipfs/QmdAsjKDB8rJEdYc8nqCCXVMcCweDArau2oZ9qaF33KJZr";
+  const uri = `fs/${__dirname}/../../build`;
   const ensAddress = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
-  const fifsAddress = "0x7bED8d0f143D14665bc438Fea4f4a952797D30fc";
+  const fifsAddress = "0x19c5cd5658d3a8ee1c18cd39a26af8879842b60e";
+  //@TODO: Need to get address of resolver in goerli
   const resolverAddress = "0xf6305c19e814d2a75429Fd637d01F7ee0E77d615";
-  const network = "rinkeby";
+  const network = "goerli";
   const domain = "open.polywrap.eth";
   const label = "test";
   const privKey = process.env.ETH_PRIV_KEY as string;
@@ -22,99 +23,68 @@ async function main() {
     throw Error("ETH_PRIV_KEY env variable is missing");
   }
 
-  // Get the test ens address
-  const { data } = await axios.get("http://localhost:4040/ens");
-  const testnetEnsAddress = data.ensAddress as string;
-
-  const provider = ethers.getDefaultProvider(network);
-  const signer = new Wallet(privKey, provider);
-
-  const client = new PolywrapClient({
-    redirects: [
-      {
-        from: "w3://ens/ipfs.polywrap.eth",
-        to: ipfsPlugin({
-          provider: "http://localhost:5001",
-          fallbackProviders: ["https://ipfs.io"]
-        }),
-      },
-      {
-        from: "w3://ens/ens.polywrap.eth",
-        to: ensPlugin({
-          addresses: {
-            testnet: testnetEnsAddress
-          }
-        }),
-      },
-      {
-        from: "w3://ens/ethereum.polywrap.eth",
-        to: ethereumPlugin({
-          networks: {
-            rinkeby: {
-              provider: provider as EthereumProvider,
-              signer
-            },
-            testnet: {
-              provider: "http://localhost:8545"
-            }
-          }
-        }),
-      }
-    ]
+  const builder = new ClientConfigBuilder();
+  const signer = new Wallet(privKey);
+  builder.addDefaults().addPackages({
+    "wrap://ens/wraps.eth:ethereum-provider@2.0.0": ethereumProviderPlugin({
+      connections: new Connections({
+        networks: {
+          [network]: new Connection({
+            provider:
+              "https://goerli.infura.io/v3/41fbecf847994df5a9652b1210effd8a",
+            signer,
+          }),
+        },
+        defaultNetwork: network,
+      }),
+    }),
   });
+  const client = new PolywrapClient(builder.build());
 
-  const reg = await client.query<{
-    registerSubnodeOwnerWithFIFSRegistrar: string
-  }>({
+  const register = await client.invoke<string>({
     uri,
-    query: `mutation {
-      registerSubnodeOwnerWithFIFSRegistrar(
-        label: "${label}"
-        owner: "${await signer.getAddress()}"
-        fifsRegistrarAddress: "${fifsAddress}"
-        connection: {
-          networkNameOrChainId: "${network}"
-        }
-      )
-    }`
+    method: "registerSubnodeOwnerWithFIFSRegistrar",
+    args: {
+      label,
+      owner: await signer.getAddress(),
+      fifsRegistrarAddress: fifsAddress,
+      connection: {
+        networkNameOrChainId: network,
+      },
+    },
   });
 
-  if (!reg.errors) {
-    console.log(`Registered Subdomain "${label}"!`)
-    console.log(reg.data?.registerSubnodeOwnerWithFIFSRegistrar);
+  if (!register.ok) {
+    throw Error(`Failed to register subdomain: ${register.error}`);
   } else {
-    throw Error(`Failed to register subdomain: ${reg.errors}`);
+    console.log(`Registered Subdomain "${label}"!`);
+    console.log(register.value);
   }
 
-  const setRes = await client.query<{
-    setResolver: string
-  }>({
+  const setResolver = await client.invoke<string>({
     uri,
-    query: `mutation {
-      setResolver(
-        domain: "${label}.${domain}"
-        resolverAddress: "${resolverAddress}"
-        registryAddress: "${ensAddress}"
-        connection: {
-          networkNameOrChainId: "${network}"
-        }
-      )
-    }`
+    method: "setResolver",
+    args: {
+      domain: `${label}.${domain}`,
+      resolverAddress,
+      registryAddress: ensAddress,
+      connection: {
+        networkNameOrChainId: network,
+      },
+    },
   });
 
-  if (!setRes.errors) {
-    console.log(`Set Resolver!`)
-    console.log(setRes.data?.setResolver);
+  if (!setResolver.ok) {
+    throw Error(`Failed to set resolver: ${setResolver.error}`);
   } else {
-    throw Error(`Failed to set resolver: ${setRes.errors}`);
+    console.log(`Set Resolver!`);
+    console.log(setResolver.value);
   }
 }
 
 main()
-  .catch(e => {
+  .catch((e) => {
     console.error(e);
     process.exit(1);
   })
-  .finally(() =>
-    process.exit(0)
-  );
+  .finally(() => process.exit(0));
