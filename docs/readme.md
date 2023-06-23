@@ -1,3 +1,45 @@
 # The ENS wrap
 
 The ENS wrap provides you with methods for easy interaction with the ENS registry.
+
+## Integrate
+
+### Step 1: Polywrap Client
+
+In order to integrate ENS into your applications, the first thing you'll need is a Polywrap client. Currently Polywrap has clients available in:
+- JavaScript / TypeScript
+- Python
+- Rust
+- Swift
+
+### Step 2: Client Config 
+
+ENS depends upon the [ethereum wrap](https://github.com/polywrap/ethers), which in-turn requires an [ethereum-provider plugin](https://github.com/polywrap/ethereum-wallet). Plugins are added directly to the client using its config.
+
+[Here's an example](https://github.com/polywrap/ethers/blob/36e6f3331264732e73f3e236004416e82930ed64/provider/implementations/js/tests/index.spec.ts#L15-L30) of setting up a JavaScript / TypeScript client with the ethereum-provider plugin.
+
+You can learn more about Polywrap clients & configs in the docs [here](https://docs.polywrap.io/tutorials/use-wraps/configure-client).
+
+### Step 3: Run!
+
+With your client successfully configured, you can now run any function on the UniV3 wrap with ease.
+
+You can execute functions in TypeScript with the `client.invoke(...)` syntax like so:
+```typescript
+await client.invoke({
+  uri: "wrap://ens/wraps.eth:ens@1.1.0",
+  method: "getContentHash",
+  args: {...}
+});
+```
+
+Or you can keep it type-safe by using Polywrap's `codegen` like so:
+```typescript
+await Ens.getContentHash({...});
+```
+
+If you'd like to generate typings for the UniV3 wrap, you can see an example of this in [Polywrap's Quick Start guide](https://docs.polywrap.io/quick-start#generating-types-codegen).
+
+## Support
+
+For any questions or problems related to the UniV3 wrap or Polywrap at large, please visit our [Discord](https://discord.polywrap.io).
