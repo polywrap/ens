@@ -49,8 +49,8 @@ Returns the address of the current [resolver]() set for the given domain.
 
 ```js
 const address = await client.invoke({
-  uri: 'ens/ens.wraps.eth@0.1.0',
-  method: 'getAddress',
+  uri: 'ens/wraps.eth:ens@1.1.0',
+  method: 'getResolver',
   args: {
     registryAddress: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
     domain: "mydomain.eth",
@@ -64,8 +64,8 @@ Returns the address of the current owner of the given domain.
 
 ```js
 const address = await client.invoke({
-  uri: 'ens/ens.wraps.eth@0.1.0',
-  method: 'getAddress',
+  uri: 'ens/wraps.eth:ens@1.1.0',
+  method: 'getOwner',
   args: {
     registryAddress: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
     domain: "mydomain.eth",
@@ -79,8 +79,8 @@ Returns the current content hash set on the given domain.
 
 ```js
 const address = await client.invoke({
-  uri: 'ens/ens.wraps.eth@0.1.0',
-  method: 'getAddress',
+  uri: 'ens/wraps.eth:ens@1.1.0',
+  method: 'getContentHash',
   args: {
     resolverAddress: "0x...",
     domain: "mydomain.eth",
@@ -94,8 +94,8 @@ Returns the expiry time for the given domain.
 
 ```js
 const address = await client.invoke({
-  uri: 'ens/ens.wraps.eth@0.1.0',
-  method: 'getAddress',
+  uri: 'ens/wraps.eth:ens@1.1.0',
+  method: 'getExpiryTimes',
   args: {
     registrarAddress: "0x...",
     domain: "mydomain.eth",
@@ -109,8 +109,8 @@ Returns the address of the current [reverse resolver]() set for the given domain
 
 ```js
 const address = await client.invoke({
-  uri: 'ens/ens.wraps.eth@0.1.0',
-  method: 'getAddress',
+  uri: 'ens/wraps.eth:ens@1.1.0',
+  method: 'getReverseResolver',
   args: {
     registryAddress: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
     domain: "mydomain.eth",
@@ -124,8 +124,8 @@ Returns the current text record set for the given key, on the given domain.
 
 ```js
 const address = await client.invoke({
-  uri: 'ens/ens.wraps.eth@0.1.0',
-  method: 'getAddress',
+  uri: 'ens/wraps.eth:ens@1.1.0',
+  method: 'getTextRecord',
   args: {
     resolverAddress: "0x...",
     domain: "mydomain.eth",
@@ -140,8 +140,8 @@ Sets a resolver for the given domain.
 
 ```js
 const address = await client.invoke({
-  uri: 'ens/ens.wraps.eth@0.1.0',
-  method: 'getAddress',
+  uri: 'ens/wraps.eth:ens@1.1.0',
+  method: 'setResolver',
   args: {
     resolverAddress: "0x...",
     registryAddress: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
@@ -156,8 +156,8 @@ Registers a new domain for the given owner.
 
 ```js
 const address = await client.invoke({
-  uri: 'ens/ens.wraps.eth@0.1.0',
-  method: 'getAddress',
+  uri: 'ens/wraps.eth:ens@1.1.0',
+  method: 'registerDomain',
   args: {
     registrarAddress: "0x...",
     domain: "mydomain.eth",
@@ -172,8 +172,8 @@ Sets a new owner for the given domain.
 
 ```js
 const address = await client.invoke({
-  uri: 'ens/ens.wraps.eth@0.1.0',
-  method: 'getAddress',
+  uri: 'ens/wraps.eth:ens@1.1.0',
+  method: 'setOwner',
   args: {
     registryAddress: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
     domain: "mydomain.eth",
@@ -188,8 +188,8 @@ Sets a new owner for the given subdomain. This method assumes the root domain is
 
 ```js
 const address = await client.invoke({
-  uri: 'ens/ens.wraps.eth@0.1.0',
-  method: 'getAddress',
+  uri: 'ens/wraps.eth:ens@1.1.0',
+  method: 'setSubdomainOwner',
   args: {
     registryAddress: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
     subdomain: "mysubdomain.mydomain.eth",
@@ -204,8 +204,8 @@ Sets a new owner for the given subdomain, along with a resolver and ttl. This me
 
 ```js
 const address = await client.invoke({
-  uri: 'ens/ens.wraps.eth@0.1.0',
-  method: 'getAddress',
+  uri: 'ens/wraps.eth:ens@1.1.0',
+  method: 'setSubdomainOwner',
   args: {
     registryAddress: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
     resolverAddress: "0x...",
@@ -223,8 +223,8 @@ Registers a new domain and subdomains in sequence for the given owner. If it rec
 
 ```js
 const address = await client.invoke({
-  uri: 'ens/ens.wraps.eth@0.1.0',
-  method: 'getAddress',
+  uri: 'ens/wraps.eth:ens@1.1.0',
+  method: 'registerDomainAndSubdomainsRecursively',
   args: {
     registryAddress: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
     registrarAddress: "0x...",
@@ -242,8 +242,8 @@ Registers all subdomains, of the given domain, in sequence for the given owner. 
 
 ```js
 const address = await client.invoke({
-  uri: 'ens/ens.wraps.eth@0.1.0',
-  method: 'getAddress',
+  uri: 'ens/wraps.eth:ens@1.1.0',
+  method: 'registerSubdomainsRecursively',
   args: {
     registryAddress: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
     resolverAddress: "0x...",
