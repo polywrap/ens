@@ -4,7 +4,7 @@ The ENS wrap provides you with methods for easy interaction with the ENS registr
 
 ## Requirements
 
-To run the ENS wrap you'll need a Polywrap client in your application. See here for installation information: https://docs.polywrap.io/clients
+To run the ENS wrap you'll need a Polywrap client in your application. See here for installation information: [https://docs.polywrap.io/clients](https://docs.polywrap.io/clients)
 
 ### Configuration
 
