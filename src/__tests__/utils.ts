@@ -1,19 +1,19 @@
-import { ClientConfigBuilder, CoreClientConfig } from "@polywrap/client-js";
+import { PolywrapClientConfigBuilder, CoreClientConfig } from "@polywrap/client-js";
 import { ETH_ENS_IPFS_MODULE_CONSTANTS, runCli } from "@polywrap/cli-js";
 import { configure } from "../../client-config";
 import { Wallet } from "ethers";
 import {
   Connection,
   Connections,
-  ethereumProviderPlugin,
-} from "@polywrap/ethereum-provider-js";
+  ethereumWalletPlugin,
+} from "@polywrap/ethereum-wallet-js";
 
 export function getClientConfig(signer?: Wallet): CoreClientConfig {
-  const config = configure(new ClientConfigBuilder());
+  const config = configure(new PolywrapClientConfigBuilder());
   if (signer) {
-    config.addPackage(
-      "wrap://ens/wraps.eth:ethereum-provider@2.0.0",
-      ethereumProviderPlugin({
+    config.setPackage(
+      "wrapscan.io/polywrap/ethereum-wallet@1.0",
+      ethereumWalletPlugin({
         connections: new Connections({
           networks: {
             testnet: new Connection({

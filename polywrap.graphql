@@ -1,4 +1,4 @@
-#import { Module, Connection } into Ethers from "wrap://ipfs/QmNkwdHYHqCoepQPmaJvsRSN525a3WBAZMAKpdtsF4VtWG"
+#import { Module, Connection } into Ethers from "wrap://ipfs/QmW4qga5U9NG7diLLuPfFx2ULXPJ8RGin7kzmY9vhgANwo"
 #import { Module } into UTS46 from "wrap://ipfs/QmPL9Njg3rGkpoJyoy8pZ5fTavjvHxNuuuiGRApzyGESZB"
 #import { Module } into SHA3 from "wrap://ipfs/QmThRxFfr7Hj9Mq6WmcGXjkRrgqMG3oD93SLX27tinQWy5"
 
