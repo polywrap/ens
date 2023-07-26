@@ -34,6 +34,8 @@ jobs:
 
       - name: Deploy
         run: yarn deploy
+        env:
+          POLYWRAP_WRAPSCAN_AUTH_HEADER_PROD: ${{secrets.POLYWRAP_WRAPSCAN_AUTH_HEADER_PROD}}
 
       - name: PR New URI
         uses: peter-evans/create-pull-request@v3
