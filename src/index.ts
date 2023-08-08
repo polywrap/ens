@@ -154,7 +154,7 @@ export class Module extends ModuleBase {
   }
 
   getReverseResolver(args: Args_getReverseResolver): string {
-    const address = namehash(args.address.substr(2) + ".addr.reverse");
+    const address = namehash(args.address.substr(2) + ".resolver.ens.eth");
 
     const resolverAddress = Ethers_Module.callContractView({
       address: args.registryAddress,
@@ -223,6 +223,20 @@ export class Module extends ModuleBase {
   }
 
   registerDomain(args: Args_registerDomain): Ethers_TxResponse {
+    const label = args.domain.split(".")[0];
+    const tx = Ethers_Module.callContractMethod({
+      address: args.registrarAddress,
+      // name, owner, duration, secret, resolver, data, reverseRecord, ownerControlledFuses
+      method: "function register(string,address,uint256,bytes32,address,bytes[],bool,uint16)",
+      args: [keccak256(label), args.owner, 28, ?, args.resolverAddress, [], false, 0],
+      connection: args.connection,
+      options: parseTxOptions(args.txOptions),
+    });
+
+    return tx.unwrap();
+  }
+
+  registerDomainWithFifsRegistrar(args: Args_registerDomain): Ethers_TxResponse {
     const label = args.domain.split(".")[0];
     const tx = Ethers_Module.callContractMethod({
       address: args.registrarAddress,

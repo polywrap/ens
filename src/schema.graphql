@@ -87,6 +87,7 @@ type Module {
   registerDomain(
     domain: String!
     registrarAddress: String!
+    resolverAddress: String!
     owner: String!
     connection: Ethers_Connection
     txOptions: TxOptions

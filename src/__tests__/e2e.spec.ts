@@ -2,7 +2,7 @@ import { PolywrapClient } from "@polywrap/client-js";
 import path from "path";
 import { Wallet, providers } from "ethers";
 
-import { getClientConfig, initInfra, stopInfra } from "./utils";
+import { getClientConfig, initInfra, stopInfra } from "./infraUtils";
 import { ETH_ENS_IPFS_MODULE_CONSTANTS } from "polywrap";
 
 jest.setTimeout(900000);
@@ -15,15 +15,18 @@ describe("ENS Wrapper", () => {
 
   let fsUri: string;
   let ethersProvider: providers.JsonRpcProvider;
-  let registryAddress: string =
-    ETH_ENS_IPFS_MODULE_CONSTANTS.ensAddresses.ensAddress;
-  let registrarAddress: string =
-    ETH_ENS_IPFS_MODULE_CONSTANTS.ensAddresses.registrarAddress;
-  let resolverAddress: string =
-    ETH_ENS_IPFS_MODULE_CONSTANTS.ensAddresses.resolverAddress.toLowerCase();
-  let reverseRegistryAddress: string =
-    ETH_ENS_IPFS_MODULE_CONSTANTS.ensAddresses.reverseAddress;
+
   let customFifsRegistrarAddress: string;
+
+  // NameWrapper - 0xd4416b13d2b3a9abae7acd5d6c2bbdbe25686401
+  // New .eth Registrar Controller - 0x253553366da8546fc250f225fe3d25d0c782303b
+  // New Reverse Registrar - 0xa58e81fe9b61b5c3fe2afd33cf304c454abfc7cb
+  // New Public Resolver - 0x231b0ee14048e9dccd1d247744d114a4eb5e8e63
+  // Exponential Price Curve Oracle - 0x7542565191d074ce84fbfa92cae13acb84788ca9
+  let registryAddress: string = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
+  let registrarAddress: string = "0x253553366da8546fc250f225fe3d25d0c782303b";
+  let resolverAddress: string = "0x231b0ee14048e9dccd1d247744d114a4eb5e8e63";
+  let reverseRegistryAddress: string = "0xa58e81fe9b61b5c3fe2afd33cf304c454abfc7cb";
 
   let owner: string = "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1";
   let anotherOwner: string = "0xffcf8fdee72ac11b5c542428b35eef5769c409f0";
@@ -70,7 +73,7 @@ describe("ENS Wrapper", () => {
     await stopInfra();
   });
 
-  it("should register domain", async () => {
+  it.only("should register domain", async () => {
     const result = await ownerClient.invoke<string>({
       uri: fsUri,
       method: "registerDomain",
