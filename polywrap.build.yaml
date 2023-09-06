@@ -1,15 +1,8 @@
-config:
-  node_version: 17.9.1
-  include:
-    - ./package.json
-    - src/index.ts
-    - src/contracts
-    - src/utils.ts
 format: 0.3.0
 strategies:
   image:
     name: ens-wrapper-build
-    node_version: 17.9.1
+    node_version: 18.15.0
     include:
       - ./package.json
       - src/index.ts
